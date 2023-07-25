@@ -5,22 +5,22 @@
 #include <stdlib.h>
 
 char* concat(const char *s1, const char *s2);
-void layout(int columns,int temp[]);
+void layout(int columns,int temps[columns]);
+
 int main(void) {
     glob_t paths;
     FILE *thermal;
     int temperature;
 
+
     FILE* fp;
     char buffer[128];
-    
-    // Open the file for reading
+    // Open the file for cpu name
     fp = fopen("/proc/cpuinfo", "r");
     if (fp == NULL) {
         printf("Could not open /proc/cpuinfo\n");
         return 1;
     }
-
     // Read the file line by line
     while (fgets(buffer, sizeof(buffer), fp) != NULL) {
         // If the line starts with "model name", print it
@@ -29,26 +29,28 @@ int main(void) {
             break;
         }
     }
-
     // Close the file
     fclose(fp);
 
 
-
-
+    //read temp of cpu
     glob("/sys/class/thermal/thermal_zone*",GLOB_TILDE,NULL,&paths);
+    int temps[paths.gl_pathc];
     for(unsigned int i=0;i<paths.gl_pathc;i++){
     	thermal=fopen(concat(paths.gl_pathv[i],"/temp"),"r");
         if(thermal==NULL){
 		perror("Failed");
 		return 1;
-	}
-	if(fscanf(thermal,"%d",&temperature) !=1){
-		perror("Failed to get temp");
-		fclose(thermal);
-	}
+	    }
+	    if(fscanf(thermal,"%d",&temperature) !=1){
+	    	perror("Failed to get temp");
+	    	fclose(thermal);
+	        }
+        temps[i]=temperature;
     }
     fclose(thermal);
+    
+    layout(paths.gl_pathc,temps);
 }
 
 char* concat(const char *s1, const char *s2) {
@@ -70,24 +72,32 @@ char* concat(const char *s1, const char *s2) {
 
 void layout(int columns,int temps[columns]){
 	for(int i=0;i<columns;i++){
-		printf("========");
+		printf("==========");
 	}
 	printf("=\n");
-	for(int i=0;i<2;i++){
-		for(int b=0;b<columns;b++){
-			printf("|       ");
-		}
-		printf("|\n");
 
-	}
+    for(int b=0;b<columns;b++){
+        printf("|         ");
+    }
+    printf("|\n");
+
+	
 	for(int b=0;b<columns;b++){
-                printf("| %i   ",temps[columns]/1000      );
+                printf("|   %iC   ",temps[b]/1000);
         }
         printf("|\n");
 
 
+    for(int b=0;b<columns;b++){
+        printf("|         ");
+    }
+    printf("|\n");
+
+	
+
+
 	for(int i=0;i<columns;i++){
-        	printf("========");
+        	printf("==========");
         }
 	printf("=\n");
 
