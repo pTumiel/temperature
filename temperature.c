@@ -72,24 +72,24 @@ char* concat(const char *s1, const char *s2) {
 
 void layout(int columns,int temps[columns]){
 	for(int i=0;i<columns;i++){
-		printf("==========");
+		printf("============");
 	}
 	printf("=\n");
 
     for(int b=0;b<columns;b++){
-        printf("|         ");
+        printf("|temp zone %i",columns-1);
     }
     printf("|\n");
 
 	
 	for(int b=0;b<columns;b++){
-                printf("|   %iC   ",temps[b]/1000);
+                printf("|    %iC    ",temps[b]/1000);
         }
         printf("|\n");
 
 
     for(int b=0;b<columns;b++){
-        printf("|         ");
+        printf("|           ");
     }
     printf("|\n");
 
@@ -97,7 +97,7 @@ void layout(int columns,int temps[columns]){
 
 
 	for(int i=0;i<columns;i++){
-        	printf("==========");
+        	printf("============");
         }
 	printf("=\n");
 
