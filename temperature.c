@@ -33,8 +33,9 @@ int main(void) {
     /* close */
     int gpuarray[]={gpu_temp};
     pclose(gp);
+    printf("%s\n",gpu_name);
     layout(1,gpuarray,1);
-    printf("%s %i",gpu_name,gpu_temp);
+    char name[50];
 
     FILE* fp;
     char buffer[128];
@@ -48,7 +49,9 @@ int main(void) {
     while (fgets(buffer, sizeof(buffer), fp) != NULL) {
         // If the line starts with "model name", print it
         if (strncmp(buffer, "model name", 10) == 0) {
-            printf("%s", buffer);
+            char* char_location = strchr(buffer, ':');
+            strncpy(name,char_location+2,sizeof(buffer)/sizeof(buffer[0]));
+            printf("%s", name);
             break;
         }
     }
@@ -106,7 +109,7 @@ void layout(int columns,int temps[columns],int flag){
             printf("|temp zone %i",b);
         }
         else{
-            printf("|gpu ");
+            printf("|    gpu    ");
             break;
         }
     }
@@ -117,9 +120,9 @@ void layout(int columns,int temps[columns],int flag){
         if(flag==0){
                 printf("|    %iC    ",temps[b]/1000);
             }
-        }
+        
         else{
-            printf("|    %iC    ",temps[b])
+            printf("|    %iC    ",temps[b]);
 
         }
         printf("|\n");
@@ -138,6 +141,7 @@ void layout(int columns,int temps[columns],int flag){
         }
 	printf("=\n");
 
+}
 }
 
 
