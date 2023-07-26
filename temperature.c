@@ -36,6 +36,7 @@ int main(void) {
     //read temp of cpu
     glob("/sys/class/thermal/thermal_zone*",GLOB_TILDE,NULL,&paths);
     int temps[paths.gl_pathc];
+
     for(unsigned int i=0;i<paths.gl_pathc;i++){
     	thermal=fopen(concat(paths.gl_pathv[i],"/temp"),"r");
         if(thermal==NULL){
@@ -77,7 +78,7 @@ void layout(int columns,int temps[columns]){
 	printf("=\n");
 
     for(int b=0;b<columns;b++){
-        printf("|temp zone %i",columns-1);
+        printf("|temp zone %i",b);
     }
     printf("|\n");
 
